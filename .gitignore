@@ -1,0 +1,7 @@
+RR_java/.idea
+RR_java/out
+RR_cpp/*
+!RR_cpp/*.h
+!RR_cpp/*.cpp
+!RR_cpp/Makefile
+!RR_cpp/*.py
