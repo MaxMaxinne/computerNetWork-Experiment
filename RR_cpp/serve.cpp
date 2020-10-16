@@ -1,12 +1,10 @@
 #include "common.h"
-#include<vector>
-#include<fstream>
-#include<algorithm>
+
 #define TIMEPIECE 7
 
 double currentTime=0;
+double workingTime=0;
 vector<double> res[PROD_NUM];
-void res_output();
 //处理一个时间片
 void serveTimePiece(producer* prod){
     double remainTime=TIMEPIECE;
@@ -25,12 +23,12 @@ void serveTimePiece(producer* prod){
         p->waitingTime=currentTime-p->comeTime;
         currentTime+=p->weight;
         remainTime-=p->serveTime;
-
+        workingTime+=p->weight;
         //输出结果
         if((p->index+1)%(QUEUE_LEN/10)==0)
             cout<<"队列"<<prod->index<<": 包"<<p->index+1<<" waitingTime: "<<p->waitingTime<<" comeTime: "<<p->comeTime<<" currentTime: "<<currentTime<<" serveTime: "<<p->weight<<endl;
         res[prod->index].push_back(p->waitingTime);
-        
+
         prod->_queue.pop();
         delete p;
     }
@@ -43,6 +41,9 @@ void serve(producer* prod){
         pointer=(pointer+1)%3;
         double min_t=__DBL_MAX__;
         bool flag=false;
+        //使currentTime等于totalTime
+        if(prod[0]._queue.empty()&&prod[1]._queue.empty()&&prod[2]._queue.empty())
+            break;
         for(int i=0;i<PROD_NUM;i++){
             double local_t=(prod[i]._queue.empty())?__DBL_MAX__:prod[i]._queue.front()->comeTime;
             if(local_t<=currentTime){
@@ -55,36 +56,22 @@ void serve(producer* prod){
         if(!flag)
             currentTime=min_t;
     }
-    res_output();
+    printf("WoringTime: %.2f\nTotalTime: %.2f\nUtilization: %.2f%%\n",workingTime,currentTime,workingTime/currentTime*100);
+    res_output_mm3(res);
 }
-//输出结果
-void res_output(){
-    char filename[20];
-    for(int i=0;i<PROD_NUM;i++){
-        sort(res[i].begin(),res[i].end());
-
-        int len=res[i].size();
-        int count=0;//区间计数
-        double range=res[i][len-1]/100,min=0,max=range;//区间范围
-        cout<<"区间范围 "<<range<<endl;
-
-        sprintf(filename,"res%d.dat",i+1);
-        ofstream out(filename);
-        if(!out.is_open()){
-            cout<<"文件打开失败"<<endl;
-            return;
-        }
-
-        for(int j=0;j<len;j++){
-            if(res[i][j]>=min&&res[i][j]<=max){
-                count++;
-            }else{
-                out<<(min+max)/2<<"    "<<(double)count/len<<endl;
-                min+=range;
-                max+=range;
-                count=0;
-            }
-        }
-        out.close();
+void servemm1(producer* prod){ 
+    double currentTime=0;
+    double workingTime=0;
+    while(!prod->_queue.empty()){
+        pack* p=prod->_queue.front();
+        if(currentTime<p->comeTime)
+            currentTime=p->comeTime;
+        currentTime+=p->weight;
+        workingTime+=p->weight;
+        p->waitingTime=currentTime-p->comeTime;
+        prod->_queue.pop();
+        delete p;
     }
+    printf("Utilization: %.2f%%\n",workingTime/currentTime*100);
 }
+

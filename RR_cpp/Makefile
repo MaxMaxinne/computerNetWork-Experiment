@@ -1,6 +1,6 @@
 TARGET=sim
 
-SOURCES=main.cpp serve.cpp
+SOURCES=main.cpp serve.cpp common.cpp
 CXX=g++
 OBJECTS = $(SOURCES:.cpp=.o)
 
