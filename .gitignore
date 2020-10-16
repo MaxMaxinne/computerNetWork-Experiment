@@ -5,3 +5,4 @@ RR_cpp/*
 !RR_cpp/*.cpp
 !RR_cpp/Makefile
 !RR_cpp/*.py
+!RR_cpp/*.sh
