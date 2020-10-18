@@ -59,19 +59,80 @@ void serve(producer* prod){
     printf("WoringTime: %.2f\nTotalTime: %.2f\nUtilization: %.2f%%\n",workingTime,currentTime,workingTime/currentTime*100);
     res_output_mm3(res);
 }
-void servemm1(producer* prod){ 
-    double currentTime=0;
-    double workingTime=0;
-    while(!prod->_queue.empty()){
-        pack* p=prod->_queue.front();
-        if(currentTime<p->comeTime)
-            currentTime=p->comeTime;
-        currentTime+=p->weight;
-        workingTime+=p->weight;
-        p->waitingTime=currentTime-p->comeTime;
-        prod->_queue.pop();
-        delete p;
+//原调度方法
+// void servemm1(producer* prod){ 
+//     double currentTime=0;
+//     double workingTime=0;
+//     vector<double> res;
+//     while(!prod->_queue.empty()){
+//         pack* p=prod->_queue.front();
+//         if(currentTime<p->comeTime)
+//             currentTime=p->comeTime;
+//         currentTime+=p->weight;
+//         workingTime+=p->weight;
+//         p->waitingTime=currentTime-p->comeTime;
+//         res.push_back(p->waitingTime);
+//         prod->_queue.pop();
+//         delete p;
+//     }
+//     res_output(res,"res_mm1.dat");
+//     printf("Utilization: %.2f%%\n",workingTime/currentTime*100);
+// }
+void servemm1(producer* prod){
+    queue<pack*> q;
+    pack* servingPack=nullptr;
+    int count=0;
+    double nextArrive_t=0,nextLeave_t=__DBL_MAX__;
+    vector<double> res;
+    while(!prod->_queue.empty()||!q.empty()){
+        if(nextArrive_t<nextLeave_t){
+            pack* nextPack=nullptr;
+            if(!prod->_queue.empty()){
+                nextPack=prod->_queue.front();
+                prod->_queue.pop();
+                currentTime=nextPack->comeTime;
+            }
+            if(q.empty()){
+                if(servingPack){
+                    q.push(nextPack);
+                    //nextArrive_t=nextPack->comeTime;
+                    if(!prod->_queue.empty())
+                        nextArrive_t=prod->_queue.front()->comeTime;
+                    else
+                        nextArrive_t=__DBL_MAX__;
+                }else{
+                    servingPack=nextPack;
+                    //currentTime+=nextPack->weight;
+                    nextLeave_t=currentTime+nextPack->weight;
+                    if(!prod->_queue.empty())
+                        nextArrive_t=prod->_queue.front()->comeTime;
+                    else
+                        nextArrive_t=__DBL_MAX__;
+                }
+            }else{
+                q.push(nextPack);
+                //nextArrive_t=nextPack->comeTime;
+                if(!prod->_queue.empty())
+                    nextArrive_t=prod->_queue.front()->comeTime;
+                else
+                    nextArrive_t=__DBL_MAX__;
+            }
+        }else{
+            currentTime=nextLeave_t;
+            workingTime+=servingPack->weight;
+            servingPack->waitingTime=currentTime-servingPack->comeTime;
+            res.push_back(servingPack->waitingTime);
+            delete servingPack;
+            if(q.empty()){
+                nextLeave_t=__DBL_MAX__;
+                servingPack=nullptr;
+            }else{
+                servingPack=q.front();
+                q.pop();
+                nextLeave_t=currentTime+servingPack->weight;
+            }
+        }
     }
+    res_output(res,"res_mm1.dat");
     printf("Utilization: %.2f%%\n",workingTime/currentTime*100);
 }
-
