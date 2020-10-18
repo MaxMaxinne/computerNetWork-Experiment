@@ -3,7 +3,7 @@ void res_output(vector<double>& res,char* filename){
     sort(res.begin(),res.end());
     int len=res.size();
     int count=0;//区间计数
-    double range=res[len-1]/100,min=0,max=range;//区间范围
+    double range=res[len-1]/70,min=0,max=range;//区间范围
     cout<<"区间范围 "<<range<<endl;
     ofstream out(filename);
     if(!out.is_open()){
@@ -15,7 +15,7 @@ void res_output(vector<double>& res,char* filename){
         if(res[j]>=min&&res[j]<=max){
             count++;
         }else{
-            out<<(min+max)/2<<"    "<<(double)count/len<<endl;
+            out<<(min+max)/2<<"    "<<log10((double)count/len)<<endl;
             min+=range;
             max+=range;
             count=0;
