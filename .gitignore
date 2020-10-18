@@ -1,6 +1,6 @@
 RR_java/.idea
 RR_java/out
-./.vscode
+.vscode
 RR_cpp/*
 !RR_cpp/*.h
 !RR_cpp/*.cpp
