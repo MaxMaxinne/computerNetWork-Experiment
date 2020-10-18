@@ -13,4 +13,4 @@ $(TARGET):$(OBJECTS)
 cleanw:
 	del $(OBJECTS) $(TARGET)
 clean:
-	rm $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET)

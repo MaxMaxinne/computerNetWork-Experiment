@@ -8,6 +8,9 @@ plt.plot(res2[0],res2[1],color="green",label="p2")
 
 res3=pd.read_csv("res3.dat",sep="    ",header=None)
 plt.plot(res3[0],res3[1],color="blue",label="p3")
+# res=pd.read_csv("res_mm1.dat",sep="    ",header=None)
+# plt.plot(res[0],res[1])
+# print(sum(res[1]))
 
 plt.legend()
 plt.show()
