@@ -1,4 +1,15 @@
 #include "common.h"
+void queueLen_output(vector<double>& l,char* filename,double totalTime){
+    ofstream out(filename);
+    if(!out.is_open()){
+        cout<<"文件打开失败"<<endl;
+        return;
+    }
+    for(int i=0;i<l.size();i++){
+        out<<i<<"    "<<log10(l[i]/totalTime)<<endl;
+    }
+    out.close();
+}
 void res_output(vector<double>& res,char* filename){
     sort(res.begin(),res.end());
     int len=res.size();

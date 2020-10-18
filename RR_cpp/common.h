@@ -50,5 +50,6 @@ void serve(producer*);
 void servemm1(producer*);
 void res_output(vector<double>&,char*);
 void res_output_mm3(vector<double>*);
+void queueLen_output(vector<double>&,char*,double);
 
 #endif

@@ -81,14 +81,18 @@ void serve(producer* prod){
 void servemm1(producer* prod){
     queue<pack*> q;
     pack* servingPack=nullptr;
-    int count=0;
     double nextArrive_t=0,nextLeave_t=__DBL_MAX__;
     vector<double> res;
+    vector<double> queLen(220,0);
+    //int maxLen=0;
     while(!prod->_queue.empty()||!q.empty()){
+        // if(maxLen<q.size())
+        //     maxLen=q.size();
         if(nextArrive_t<nextLeave_t){
             pack* nextPack=nullptr;
             if(!prod->_queue.empty()){
                 nextPack=prod->_queue.front();
+                queLen[q.size()]+=nextPack->comeTime-currentTime;
                 prod->_queue.pop();
                 currentTime=nextPack->comeTime;
             }
@@ -118,6 +122,7 @@ void servemm1(producer* prod){
                     nextArrive_t=__DBL_MAX__;
             }
         }else{
+            queLen[q.size()]+=nextLeave_t-currentTime;
             currentTime=nextLeave_t;
             workingTime+=servingPack->weight;
             servingPack->waitingTime=currentTime-servingPack->comeTime;
@@ -134,5 +139,7 @@ void servemm1(producer* prod){
         }
     }
     res_output(res,"res_mm1.dat");
+    queueLen_output(queLen,"len_mm1.dat",workingTime);
     printf("Utilization: %.2f%%\n",workingTime/currentTime*100);
+    // cout<<maxLen<<endl;
 }
