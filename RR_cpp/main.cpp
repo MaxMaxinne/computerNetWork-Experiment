@@ -8,7 +8,7 @@ int main(int argc,char** argv){
         cout<<"M/M/"<<PROD_NUM<<" queueLen: "<<QUEUE_LEN<<endl;
         for(int i=0;i<PROD_NUM;i++)
             p[i]=producer(i,lamda[i],Mu[i]);
-        serve(p);
+        servemm3(p);
     }else{
         cout<<"M/M/1"<<" queueLen: "<<QUEUE_LEN<<endl;
         producer prod=producer(0,atof(argv[2]),atof(argv[3]));

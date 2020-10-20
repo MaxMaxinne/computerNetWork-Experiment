@@ -46,10 +46,11 @@ struct producer{
     
 };
 
-void serve(producer*);
+void servemm3(producer*);
+//void serve(producer*);
 void servemm1(producer*);
 void res_output(vector<double>&,char*);
 void res_output_mm3(vector<double>*);
 void queueLen_output(vector<double>&,char*,double);
-
+void queueLen_output_mm3(vector<double>*,double);
 #endif
