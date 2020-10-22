@@ -1,9 +1,9 @@
 #include "common.h"
 
-#define TIMEPIECE 7
+#define TIMEPIECE 1
 
 double currentTime=0,workingTime=0;
-// 处理一个时间片
+//处理一个时间片
 // void serveTimePiece(producer* prod,vector<double>* res){
 //     double remainTime=TIMEPIECE;
 //     while(!prod->_queue.empty()&&remainTime>0){
@@ -145,10 +145,10 @@ void servemm3(producer* prod){
     //double currentTime=0,workingTime=0;
     double nextArrive_t=0,nextLeave_t=__DBL_MAX__,remainTime=TIMEPIECE;
     vector<double> res[PROD_NUM];
-    vector<double> queueLen[3]={vector<double>(200,0),vector<double>(200,0),vector<double>(200,0)};
+    vector<double> queueLen[3]={vector<double>(630,0),vector<double>(630,0),vector<double>(630,0)};
     int serve_p=0,queue_p=0;//多队列指针，指向获得当前时间片的队列与下一个有包到达的队列
     queue<pack*> q[3];
-    // int maxlen=0;
+    int maxlen=0;
     pack* servingPack=nullptr;
     queue_p=nextComingQueue(prod,nextArrive_t);
     while(!prod[0]._queue.empty()||!prod[1]._queue.empty()||!prod[2]._queue.empty()||!q[0].empty()||!q[1].empty()||!q[2].empty()){
@@ -172,8 +172,8 @@ void servemm3(producer* prod){
                 }else{
                     serve_p=queue_p;
                     q[queue_p].push(nextPack);
-                    // if(q[queue_p].size()>maxlen)
-                    //     maxlen=q[queue_p].size();
+                    if(q[queue_p].size()>maxlen)
+                        maxlen=q[queue_p].size();
                     if(nextPack->serveTime<TIMEPIECE){
                         servingPack=nextPack;
                         nextLeave_t=currentTime+servingPack->weight;
@@ -185,8 +185,8 @@ void servemm3(producer* prod){
                 }
             }else{
                 q[queue_p].push(nextPack);
-                // if(q[queue_p].size()>maxlen)
-                //     maxlen=q[queue_p].size();
+                if(q[queue_p].size()>maxlen)
+                    maxlen=q[queue_p].size();
                 queue_p=nextComingQueue(prod,nextArrive_t);
             }
         }else{
@@ -218,7 +218,7 @@ void servemm3(producer* prod){
         }
     }
     printf("WoringTime: %.2f\nTotalTime: %.2f\nUtilization: %.2f%%\n",workingTime,currentTime,workingTime/currentTime*100);
-    //cout<<maxlen<<endl;
+    cout<<"max queue Length:"<<maxlen<<endl;
     res_output_mm3(res);
     queueLen_output_mm3(queueLen,currentTime);
 }
@@ -285,8 +285,8 @@ void servemm1(producer* prod){
             }
         }
     }
-    res_output(res,"res_mm1.dat");
-    queueLen_output(queLen,"len_mm1.dat",currentTime);
+    res_output(res,"./res_output/res_mm1.dat");
+    queueLen_output(queLen,"./res_output/len_mm1.dat",currentTime);
     printf("Utilization: %.2f%%\n",workingTime/currentTime*100);
     // cout<<maxLen<<endl;
 }

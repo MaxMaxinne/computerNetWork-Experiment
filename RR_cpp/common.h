@@ -10,7 +10,7 @@
 using namespace std;
 
 #define PROD_NUM 3
-#define QUEUE_LEN 10000000
+#define QUEUE_LEN 1000000
 #define random() (double)rand()/RAND_MAX
 
 #ifndef COMMON
@@ -47,7 +47,7 @@ struct producer{
 };
 
 void servemm3(producer*);
-//void serve(producer*);
+// void serve(producer*);
 void servemm1(producer*);
 void res_output(vector<double>&,char*);
 void res_output_mm3(vector<double>*);

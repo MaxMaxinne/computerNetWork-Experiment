@@ -6,7 +6,7 @@ void queueLen_output(vector<double>& l,char* filename,double totalTime){
         return;
     }
     for(int i=0;i<l.size();i++){
-        out<<i<<"    "<<log10(l[i]/totalTime)<<endl;
+        out<<i<<"    "<<l[i]/totalTime<<endl;
     }
     out.close();
 }
@@ -26,7 +26,7 @@ void res_output(vector<double>& res,char* filename){
         if(res[j]>=min&&res[j]<=max){
             count++;
         }else{
-            out<<(min+max)/2<<"    "<<log10((double)count/len)<<endl;
+            out<<(min+max)/2<<"    "<<(double)count/len<<endl;
             min+=range;
             max+=range;
             count=0;
@@ -35,16 +35,24 @@ void res_output(vector<double>& res,char* filename){
     out.close();
 }
 void res_output_mm3(vector<double>* res){
-    char filename[20];
+    char filename[40];
     for(int i=0;i<PROD_NUM;i++){
-        sprintf(filename,"res%d.dat",i+1);
+        sprintf(filename,"./res_output/res%d.dat",i+1);
+        double t=0.0;
+        for(int j=0;j<res[i].size();j++)
+            t+=res[i][j];
+        printf("队列%d平均等待时间: %.2f\n",i+1,t/QUEUE_LEN);
         res_output(res[i],filename);
     }
 }
 void queueLen_output_mm3(vector<double>* queueLen,double totalTime){
-    char filename[20];
+    char filename[40];
     for(int i=0;i<PROD_NUM;i++){
-        sprintf(filename,"len%d.dat",i+1);
+        sprintf(filename,"./res_output/len%d.dat",i+1);
         queueLen_output(queueLen[i],filename,totalTime);
+        double t=0.0;
+        for(int j=0;j<queueLen[i].size();j++)
+            t+=queueLen[i][j]*j;
+        printf("队列%d平均长度: %.2f\n",i+1,t/totalTime);
     }
 }
