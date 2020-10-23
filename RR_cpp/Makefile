@@ -11,8 +11,6 @@ ALL_OBJ_POS = $(addprefix $(OBJ_PATH),$(OBJECTS))
 $(TARGET):$(OBJECTS)
 	$(CXX) -o $(TARGET) $(ALL_OBJ_POS)
 
-.PHONY:cleanw clean
-cleanw:
-	del $(OBJECTS) $(TARGET)
+.PHONY:clean
 clean:
 	rm -f $(ALL_OBJ_POS) $(TARGET)
