@@ -41,8 +41,15 @@ void servemm3(producer* prod){
     vector<double> res[PROD_NUM];
     cout<<"Start simulation.Using RR.\ntimePiece: "<<TIMEPIECE<<endl;
     int pointer=0;
+    bool isExecuted=false;
     while(!prod[0].empty()||!prod[1].empty()||!prod[2].empty()){
         serveTimePiece(prod+pointer,res);
+        if(!isExecuted&&(prod[0].front_ptr>QUEUE_LEN*0.5)){
+            isExecuted=true;
+            for(int i=0;i<PROD_NUM;i++){
+                cout<<"队列"<<i+1<<"吞吐量: "<<prod[i].front_ptr<<endl;
+            }
+        }
         pointer=(pointer+1)%3;
         double min_t=__DBL_MAX__;
         bool flag=false;
