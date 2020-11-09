@@ -9,7 +9,6 @@ void queueLen_output(map<int,double> m,char* filename,double totalTime){
     // for(int i=0;i<l.size();i++){
     //     out<<i<<"    "<<l[i]/totalTime<<endl;
     // }
-    cout<<m.size()<<endl;;
     for(auto iter=m.begin();iter!=m.end();iter++){
         
         out<<iter->first<<"    "<<iter->second/totalTime<<endl;
@@ -86,8 +85,6 @@ void queueLen_output_mm3(producer* prod,double totalTime){
                 else
                     nextLeave_t=__DBL_MAX__;
             }
-            if(p1%(QUEUE_LEN/10)==0)
-                cout<<p1<<":"<<p2<<endl;
         }
         queueLen_output(m,filename,totalTime);
         double t=0.0;
