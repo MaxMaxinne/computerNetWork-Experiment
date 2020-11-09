@@ -36,7 +36,7 @@ struct producer{
         double currentTime=0;
         for(int i=0;i<QUEUE_LEN;i++){
             if((i+1)%(QUEUE_LEN/10)==0)
-                cout<<"队列"<<index<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;
+                cout<<"队列"<<index+1<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;
             //TODO 修改乘为除
             pack* p=new pack(i,-log(random())/Mu,currentTime);
             currentTime+=-log(random())/lamda;//泊松过程
