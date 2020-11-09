@@ -12,9 +12,9 @@ res_dir := ./res_output
 $(shell if [ ! -e $(obj_dir) ];then mkdir -p $(obj_dir); fi)
 $(shell if [ ! -e $(res_dir) ];then mkdir -p $(res_dir); fi)
 
-%.o:%.cpp
-	$(CXX) -c $< -o $(OBJ_PATH)$@
-$(TARGET):$(OBJECTS)
+./obj/%.o:%.cpp
+	$(CXX) -c $< -o $@
+$(TARGET):$(ALL_OBJ_POS)
 	$(CXX) -o $(TARGET) $(ALL_OBJ_POS)
 
 .PHONY:clean
