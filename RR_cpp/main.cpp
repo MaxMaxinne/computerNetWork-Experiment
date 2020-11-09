@@ -12,7 +12,7 @@ int main(int argc,char** argv){
     }else{
         cout<<"M/M/1"<<" queueLen: "<<QUEUE_LEN<<endl;
         producer prod=producer(0,atof(argv[2]),atof(argv[3]));
-        servemm1(&prod);
+        //servemm1(&prod);
     }
         
     return 0;

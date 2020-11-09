@@ -1,12 +1,18 @@
 #include "common.h"
-void queueLen_output(vector<double>& l,char* filename,double totalTime){
+
+void queueLen_output(map<int,double> m,char* filename,double totalTime){
     ofstream out(filename);
     if(!out.is_open()){
         cout<<"文件打开失败"<<endl;
         return;
     }
-    for(int i=0;i<l.size();i++){
-        out<<i<<"    "<<l[i]/totalTime<<endl;
+    // for(int i=0;i<l.size();i++){
+    //     out<<i<<"    "<<l[i]/totalTime<<endl;
+    // }
+    cout<<m.size()<<endl;;
+    for(auto iter=m.begin();iter!=m.end();iter++){
+        
+        out<<iter->first<<"    "<<iter->second/totalTime<<endl;
     }
     out.close();
 }
@@ -45,14 +51,51 @@ void res_output_mm3(vector<double>* res){
         res_output(res[i],filename);
     }
 }
-void queueLen_output_mm3(vector<double>* queueLen,double totalTime){
+void queueLen_output_mm3(producer* prod,double totalTime){
     char filename[40];
     for(int i=0;i<PROD_NUM;i++){
         sprintf(filename,"./res_output/len%d.dat",i+1);
-        queueLen_output(queueLen[i],filename,totalTime);
+        map<int,double> m;
+        int p1=0,p2=0;//p1指向下一个到达包，p2指向下一个离开包
+        double nextLeave_t=prod[i]._queue[0]->leaveTime,nextArr_t=prod[i]._queue[0]->comeTime,cur_t=0;
+        while(p1<QUEUE_LEN||p2<QUEUE_LEN){
+            if(nextArr_t<nextLeave_t){
+                auto iter=m.find(p2-p1);
+                if(iter!=m.end()){
+                    iter->second+=nextArr_t-cur_t;
+                }else{
+                    m[p2-p1]=nextArr_t-cur_t;
+                }
+                cur_t=nextArr_t;
+                p2++;
+                if(p2<QUEUE_LEN)
+                    nextArr_t=prod[i]._queue[p2]->comeTime;
+                else
+                    nextArr_t=__DBL_MAX__;
+            }else{
+                auto iter=m.find(p2-p1);
+                if(iter!=m.end()){
+                    iter->second+=nextLeave_t-cur_t;
+                }else{
+                    m[p2-p1]=nextLeave_t-cur_t;
+                }
+                cur_t=nextLeave_t;
+                p1++;
+                if(p1<QUEUE_LEN)
+                    nextLeave_t=prod[i]._queue[p1]->leaveTime;
+                else
+                    nextLeave_t=__DBL_MAX__;
+            }
+            if(p1%(QUEUE_LEN/10)==0)
+                cout<<p1<<":"<<p2<<endl;
+        }
+        queueLen_output(m,filename,totalTime);
         double t=0.0;
-        for(int j=0;j<queueLen[i].size();j++)
-            t+=queueLen[i][j]*j;
+        // for(int j=0;j<queueLen[i].size();j++)
+        //     t+=queueLen[i][j]*j;
+        for(auto iter=m.begin();iter!=m.end();iter++){
+            t+=iter->first*iter->second;
+        }
         printf("队列%d平均长度: %.5f\n",i+1,t/totalTime);
     }
 }
