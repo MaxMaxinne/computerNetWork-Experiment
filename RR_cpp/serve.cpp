@@ -5,10 +5,14 @@
 
 double currentTime=0,workingTime=0;
 double remainTime[3]={TIMEPIECE,TIMEPIECE,TIMEPIECE};
+double finishTime[3]={0,0,0};
+vector<double> res[PROD_NUM];
 #ifdef OLD1
 //处理一个时间片
-void serveTimePiece(producer* prod,vector<double>* res){
+void serveTimePiece(producer* prod){
     int queue_index=prod->index;
+    if(remainTime[queue_index]<TIMEPIECE)
+        remainTime[queue_index]=TIMEPIECE;
     while(!prod->empty()&&remainTime[queue_index]>0){
         pack* p=prod->_queue[prod->front_ptr];
         //包未到达
@@ -36,14 +40,16 @@ void serveTimePiece(producer* prod,vector<double>* res){
         //cout<<prod->front_ptr<<endl;
         //delete p;
     }
+    if(prod->empty()&&finishTime[queue_index]==0)
+        finishTime[queue_index]=currentTime;
 }
 void servemm3(producer* prod){
-    vector<double> res[PROD_NUM];
+    
     cout<<"Start simulation.Using RR.\ntimePiece: "<<TIMEPIECE<<endl;
     int pointer=0;
     bool isExecuted=false;
     while(!prod[0].empty()||!prod[1].empty()||!prod[2].empty()){
-        serveTimePiece(prod+pointer,res);
+        serveTimePiece(prod+pointer);
         if(!isExecuted&&(prod[0].front_ptr>QUEUE_LEN*0.5)){
             isExecuted=true;
             for(int i=0;i<PROD_NUM;i++){
@@ -70,7 +76,7 @@ void servemm3(producer* prod){
     }
     printf("WoringTime: %.2f\nTotalTime: %.2f\nUtilization: %.2f%%\n",workingTime,currentTime,workingTime/currentTime*100);
     res_output_mm3(res);
-    queueLen_output_mm3(prod,workingTime);
+    queueLen_output_mm3(prod,finishTime);
 }
 #endif
 
