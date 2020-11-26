@@ -1,7 +1,7 @@
 TARGET=lab2
 
 CXX=g++
-SOURCES=main.cpp
+SOURCES=main.cpp common.cpp
 OBJ=$(SOURCES:.cpp=.o)
 
 all:$(TARGET)

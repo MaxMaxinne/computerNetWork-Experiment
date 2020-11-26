@@ -49,4 +49,9 @@ struct producer{
         return front_ptr>=QUEUE_LEN;
     }
 };
+
+void res_output(vector<double>&,char*);
+void res_output_mm3(vector<double>*);
+void queueLen_output(map<int,double>,char*,double);
+void queueLen_output_mm3(producer*,double*);
 #endif
