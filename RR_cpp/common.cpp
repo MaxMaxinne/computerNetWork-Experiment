@@ -108,7 +108,7 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
     for(int i=0;i<PROD_NUM;i++){
         sprintf(filename,"./res_output/len%d.dat",i+1);
         map<int,double,greater<int>> m;
-        int p1=0,p2=0;//p1指向下一个到达包，p2指向下一个离开包
+        int p1=0,p2=0;//p1指向下一个离开包，p2指向下一个到达包
         double nextLeave_t=prod[i]._queue[0]->leaveTime,nextArr_t=prod[i]._queue[0]->comeTime,cur_t=0;
         while(p1<QUEUE_LEN||p2<QUEUE_LEN){
             if(nextArr_t<nextLeave_t){
