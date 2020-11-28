@@ -13,6 +13,7 @@ using namespace std;
 #define PROD_NUM 5
 #define QUEUE_LEN 1000000
 #define random() (double)rand()/RAND_MAX
+#define PACK_HEAD 2+2+6+6+2+4
 
 #ifndef COMMON
 #define COMMON
@@ -40,7 +41,7 @@ struct producer{
             if((i+1)%(QUEUE_LEN/10)==0)
                 cout<<"队列"<<index+1<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;
             //TODO 修改乘为除
-            pack* p=new pack(i,-log(random())/Mu,currentTime);
+            pack* p=new pack(i,-log(random())*Mu,currentTime);
             currentTime+=-log(random())/lamda;//泊松过程
             _queue.push_back(p);
         }

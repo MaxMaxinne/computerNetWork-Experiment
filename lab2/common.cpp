@@ -53,7 +53,7 @@ void res_output_mm3(vector<double>* res){
         double t=0.0;
         for(int j=0;j<res[i].size();j++)
             t+=res[i][j];
-        printf("队列%d平均等待时间: %.5f\n",i+1,t/QUEUE_LEN);
+        printf("站%d平均延迟: %.5f\n",i+1,t/QUEUE_LEN);
         res_output(res[i],filename);
     }
 }
@@ -100,6 +100,6 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
         for(auto iter=m.begin();iter!=m.end();iter++){
             t+=iter->first*iter->second;
         }
-        printf("队列%d平均长度: %.5f\n",i+1,t/totalTime[i]);
+        printf("站%d平均长度: %.5f\n",i+1,t/totalTime[i]);
     }
 }

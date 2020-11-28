@@ -1,7 +1,11 @@
 #include "common.h"
-double getRetryTime(int n){
-    return random()*0.02;
-    
+#define SLOT 0.001
+#define SIFS 0.02
+#define DIFS SIFS+SLOT*2
+#define ACK_DELAY 0
+#define BASIC_RANGE 4
+double getBackOffTime(int& n){
+    return 0;
 }
 int min(double* arr){
     int minp=0;
@@ -26,28 +30,45 @@ void run(producer* p){
     double end_t=__DBL_MAX__;
     //信道忙碌标志
     bool busy=false;
-    int totalCrashPack=0;
+    int totalCollisionPack=0;
     double trans_t=0.0;
     //等待时间
     vector<double> res[PROD_NUM];
     double totalTime[PROD_NUM];
     //指数回退
-    int backoff[PROD_NUM]={0,0,0,0,0};
+    int backoffCount[PROD_NUM]={0,0,0,0,0};
+    int backoffRange[PROD_NUM]={BASIC_RANGE,BASIC_RANGE,BASIC_RANGE,BASIC_RANGE,BASIC_RANGE};
     while(!p[0].empty()||!p[1].empty()||!p[2].empty()||!p[3].empty()||!p[4].empty()){
+        //指向下一个事件发生的站
         int send_ptr=min(send_t);
         if(!busy){
             cur_t=send_t[send_ptr];
+            if(backoffCount[send_ptr]>0){
+                send_t[send_ptr]+=SLOT;
+                backoffCount[send_ptr]--;
+                continue;
+            }
             //判断是否碰撞
-            int crashNum=0;
+            int collisionNum=0;
             for(int i=0;i<PROD_NUM;i++){
                 if(i!=send_ptr&&send_t[send_ptr]==send_t[i]){
-                    ++crashNum;
-                    send_t[i]+=getRetryTime(backoff[send_ptr]++);
+                    ++collisionNum;
+                    backoffRange[i]=backoffRange[i]*2;
+                    backoffCount[i]=rand()%backoffRange[i];
+                    if(backoffCount[i]>0){
+                        send_t[i]+=SLOT;
+                        --backoffCount[i];
+                    }
                 }
             }
-            if(crashNum){
-                send_t[send_ptr]+=getRetryTime(backoff[send_ptr]++);
-                totalCrashPack+=crashNum;
+            if(collisionNum){
+                backoffRange[send_ptr]=backoffRange[send_ptr]*2;
+                backoffCount[send_ptr]=rand()%backoffRange[send_ptr];
+                if(backoffCount[send_ptr]>0){
+                    send_t[send_ptr]+=SLOT;
+                    --backoffCount[send_ptr];
+                }
+                totalCollisionPack+=collisionNum;
                 continue;
             }
 
@@ -57,7 +78,8 @@ void run(producer* p){
             res[send_ptr].push_back(next_send->waitingTime);
             trans_t+=next_send->weight;
             end_t=cur_t+next_send->weight;
-            backoff[send_ptr]=0;
+            backoffRange[send_ptr]=BASIC_RANGE;
+            backoffCount[send_ptr]=rand()%BASIC_RANGE;
             busy=true;
             if((next_send->index+1)%(QUEUE_LEN/10)==0)
                 cout<<"站"<<p[send_ptr].index+1<<": 包"<<next_send->index+1<<" waitingTime: "<<next_send->waitingTime<<" comeTime: "<<next_send->comeTime<<" currentTime: "<<cur_t<<" transTime: "<<next_send->weight<<endl;
@@ -76,11 +98,11 @@ void run(producer* p){
                 cur_t=end_t;
             }else{
                 cur_t=send_t[send_ptr];
-                send_t[send_ptr]+=getRetryTime(backoff[send_ptr]++);
+                send_t[send_ptr]=end_t;
             }
         }
     }
-    printf("TotalTime:%.2f TransTime:%.2f Utilization:%.2f%% crashRate:%.2f%%\n",cur_t,trans_t,trans_t/cur_t*100,(double)totalCrashPack/(3*PROD_NUM)*100);
+    printf("TotalTime:%.2f TransTime:%.2f Utilization:%.2f%% collisionRate:%.2f%%\n",cur_t,trans_t,trans_t/cur_t*100,(double)totalCollisionPack/(3*PROD_NUM)*100);
     res_output_mm3(res);
     queueLen_output_mm3(p,totalTime);
 }
