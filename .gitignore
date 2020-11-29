@@ -7,8 +7,9 @@ RR_cpp/*
 !RR_cpp/Makefile
 !RR_cpp/*.m
 !RR_cpp/*.sh
-./lab2/*
-!./lab2/*.h
-!./lab2/*.cpp
-!./lab2/Makefile
-!./lab2/run.sh
+lab2/*
+!lab2/*.h
+!lab2/*.cpp
+!lab2/Makefile
+!lab2/*.sh
+!lab2/*.m
