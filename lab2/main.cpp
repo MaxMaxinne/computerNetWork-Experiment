@@ -1,15 +1,10 @@
 #include "common.h"
-#define SLOT 0.001
-#define SIFS 0.02
-#define DIFS SIFS+SLOT*2
+
 #define ACK_DELAY 0
-#define BASIC_RANGE 4
-double getBackOffTime(int& n){
-    return 0;
-}
-int min(double* arr){
+#define BASIC_RANGE 32
+int min(int* arr){
     int minp=0;
-    double mint=__DBL_MAX__;
+    int mint=INT32_MAX;
     for(int i=0;i<PROD_NUM;i++){
         if(arr[i]<mint){
             minp=i;
@@ -20,89 +15,95 @@ int min(double* arr){
 }
 void run(producer* p){
     //当前时间
-    double cur_t=0.0;
-    //五个站下一个请求发包时间
-    double send_t[PROD_NUM]={__DBL_MAX__,__DBL_MAX__,__DBL_MAX__,__DBL_MAX__,__DBL_MAX__};
+    int cur_t=0;
+    //五个站下一个请求时间(SLOT)
+    int key_t[PROD_NUM]={INT32_MAX,INT32_MAX,INT32_MAX,INT32_MAX,INT32_MAX};
     for(int i=0;i<PROD_NUM;i++){
-        send_t[i]=p[i]._queue[0]->comeTime;
+        key_t[i]=p[i]._queue[0]->comeTime;
     }
     //包退出占用信道的时间
-    double end_t=__DBL_MAX__;
+    int end_t=INT32_MAX;
     //信道忙碌标志
     bool busy=false;
     int totalCollisionPack=0;
-    double trans_t=0.0;
+    int trans_t=0;
     //等待时间
-    vector<double> res[PROD_NUM];
-    double totalTime[PROD_NUM];
+    vector<int> res[PROD_NUM];
+    int totalTime[PROD_NUM];
     //指数回退
     int backoffCount[PROD_NUM]={0,0,0,0,0};
     int backoffRange[PROD_NUM]={BASIC_RANGE,BASIC_RANGE,BASIC_RANGE,BASIC_RANGE,BASIC_RANGE};
+    for(int i=0;i<PROD_NUM;i++){
+        backoffCount[i]=rand()%backoffRange[i];
+    }
     while(!p[0].empty()||!p[1].empty()||!p[2].empty()||!p[3].empty()||!p[4].empty()){
         //指向下一个事件发生的站
-        int send_ptr=min(send_t);
+        int key_ptr=min(key_t);
+        //cout<<key_ptr<<endl;
         if(!busy){
-            cur_t=send_t[send_ptr];
-            if(backoffCount[send_ptr]>0){
-                send_t[send_ptr]+=SLOT;
-                backoffCount[send_ptr]--;
+            cur_t=key_t[key_ptr];
+            if(backoffCount[key_ptr]>0){
+                key_t[key_ptr]+=SLOT;
+                backoffCount[key_ptr]--;
                 continue;
             }
             //判断是否碰撞
             int collisionNum=0;
             for(int i=0;i<PROD_NUM;i++){
-                if(i!=send_ptr&&send_t[send_ptr]==send_t[i]){
+                if(i!=key_ptr&&key_t[key_ptr]==key_t[i]&&backoffCount[i]==0){
                     ++collisionNum;
                     backoffRange[i]=backoffRange[i]*2;
                     backoffCount[i]=rand()%backoffRange[i];
                     if(backoffCount[i]>0){
-                        send_t[i]+=SLOT;
+                        key_t[i]+=SLOT;
                         --backoffCount[i];
                     }
                 }
             }
             if(collisionNum){
-                backoffRange[send_ptr]=backoffRange[send_ptr]*2;
-                backoffCount[send_ptr]=rand()%backoffRange[send_ptr];
-                if(backoffCount[send_ptr]>0){
-                    send_t[send_ptr]+=SLOT;
-                    --backoffCount[send_ptr];
+                backoffRange[key_ptr]=backoffRange[key_ptr]*2;
+                backoffCount[key_ptr]=rand()%backoffRange[key_ptr];
+                if(backoffCount[key_ptr]>0){
+                    key_t[key_ptr]+=SLOT;
+                    --backoffCount[key_ptr];
                 }
                 totalCollisionPack+=collisionNum;
                 continue;
             }
 
-            pack* next_send=p[send_ptr]._queue[p[send_ptr].front_ptr];
+            pack* next_send=p[key_ptr]._queue[p[key_ptr].front_ptr];
             next_send->leaveTime=cur_t;
             next_send->waitingTime=next_send->leaveTime-next_send->comeTime;
-            res[send_ptr].push_back(next_send->waitingTime);
+            res[key_ptr].push_back(next_send->waitingTime);
             trans_t+=next_send->weight;
             end_t=cur_t+next_send->weight;
-            backoffRange[send_ptr]=BASIC_RANGE;
-            backoffCount[send_ptr]=rand()%BASIC_RANGE;
+            backoffRange[key_ptr]=BASIC_RANGE;
+            backoffCount[key_ptr]=rand()%BASIC_RANGE;
             busy=true;
             if((next_send->index+1)%(QUEUE_LEN/10)==0)
-                cout<<"站"<<p[send_ptr].index+1<<": 包"<<next_send->index+1<<" waitingTime: "<<next_send->waitingTime<<" comeTime: "<<next_send->comeTime<<" currentTime: "<<cur_t<<" transTime: "<<next_send->weight<<endl;
-            ++p[send_ptr].front_ptr;
-            if(p[send_ptr].empty()){
-                send_t[send_ptr]=__DBL_MAX__;
-                totalTime[send_ptr]=cur_t;
+                cout<<"站"<<p[key_ptr].index+1<<": 包"<<next_send->index+1<<" waitingTime: "<<next_send->waitingTime<<" comeTime: "<<next_send->comeTime<<" currentTime: "<<cur_t<<" transTime: "<<next_send->weight<<endl;
+            ++p[key_ptr].front_ptr;
+            if(p[key_ptr].empty()){
+                key_t[key_ptr]=INT32_MAX;
+                totalTime[key_ptr]=cur_t;
             }else{
-                double nextCome_t=p[send_ptr]._queue[p[send_ptr].front_ptr]->comeTime;
-                send_t[send_ptr]=(nextCome_t>cur_t)?nextCome_t:cur_t;
+                int nextCome_t=p[key_ptr]._queue[p[key_ptr].front_ptr]->comeTime;
+                //没包发的时候会countdown吗
+                key_t[key_ptr]=(nextCome_t>end_t)?nextCome_t:end_t;
             }
         }else{
-            if(end_t<=send_t[send_ptr]){
+            if(end_t<=key_t[key_ptr]){
                 busy=false;
-                end_t=__DBL_MAX__;
+                end_t=INT32_MAX;
                 cur_t=end_t;
             }else{
-                cur_t=send_t[send_ptr];
-                send_t[send_ptr]=end_t;
+                cur_t=key_t[key_ptr];
+                key_t[key_ptr]=end_t;
             }
         }
     }
-    printf("TotalTime:%.2f TransTime:%.2f Utilization:%.2f%% collisionRate:%.2f%%\n",cur_t,trans_t,trans_t/cur_t*100,(double)totalCollisionPack/(3*PROD_NUM)*100);
+    printf("TotalTime:%d TransTime:%d Utilization:%.2f%% collisionRate:%.2f%%\n",cur_t,trans_t,(double)trans_t/cur_t*100,(double)totalCollisionPack/(3*QUEUE_LEN)*100);
+    
     res_output_mm3(res);
     queueLen_output_mm3(p,totalTime);
 }

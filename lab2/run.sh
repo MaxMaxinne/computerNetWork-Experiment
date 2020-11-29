@@ -1,1 +1,1 @@
-make clean&&make&&./lab2 1 1 2 2 2 10 10 10 10 10
+make clean&&make&&./lab2 100 100 200 200 300 10 10 10 10 10

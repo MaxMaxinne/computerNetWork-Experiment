@@ -1,10 +1,10 @@
 #include "common.h"
-void res_output(vector<double>& res,char* filename){
+void res_output(vector<int>& res,char* filename){
     sort(res.begin(),res.end());
     int len=res.size();
     int count=0,pnum=100;//区间计数
-    double range=res[len-1]/pnum,min=0,max=range;//区间范围
-    map<double,double,greater<double>> m;
+    int range=res[len-1]/pnum,min=0,max=range;//区间范围
+    map<int,double,greater<double>> m;
     cout<<"区间范围 "<<range<<endl;
     ofstream out(filename);
     if(!out.is_open()){
@@ -30,7 +30,7 @@ void res_output(vector<double>& res,char* filename){
     }
     out.close();
 }
-void queueLen_output(map<int,double,greater<int>> m,char* filename,double totalTime){
+void queueLen_output(map<int,int,greater<int>> m,char* filename,int totalTime){
     ofstream out(filename);
     if(!out.is_open()){
         cout<<"文件打开失败"<<endl;
@@ -41,29 +41,29 @@ void queueLen_output(map<int,double,greater<int>> m,char* filename,double totalT
     // }
     double p_sum=0.0;
     for(auto iter=m.begin();iter!=m.end();iter++){
-        p_sum+=iter->second/totalTime;        
+        p_sum+=(double)iter->second/totalTime;        
         out<<iter->first<<"    "<<p_sum<<endl;
     }
     out.close();
 }
-void res_output_mm3(vector<double>* res){
+void res_output_mm3(vector<int>* res){
     char filename[40];
     for(int i=0;i<PROD_NUM;i++){
         sprintf(filename,"./res_output/res%d.dat",i+1);
-        double t=0.0;
+        long t=0;
         for(int j=0;j<res[i].size();j++)
             t+=res[i][j];
-        printf("站%d平均延迟: %.5f\n",i+1,t/QUEUE_LEN);
+        printf("站%d平均延迟: %.5f\n",i+1,(double)t/QUEUE_LEN);
         res_output(res[i],filename);
     }
 }
-void queueLen_output_mm3(producer* prod,double* totalTime){
+void queueLen_output_mm3(producer* prod,int* totalTime){
     char filename[40];
     for(int i=0;i<PROD_NUM;i++){
         sprintf(filename,"./res_output/len%d.dat",i+1);
-        map<int,double,greater<int>> m;
+        map<int,int,greater<int>> m;
         int p1=0,p2=0;//p1指向下一个离开包，p2指向下一个到达包
-        double nextLeave_t=prod[i]._queue[0]->leaveTime,nextArr_t=prod[i]._queue[0]->comeTime,cur_t=0;
+        int nextLeave_t=prod[i]._queue[0]->leaveTime,nextArr_t=prod[i]._queue[0]->comeTime,cur_t=0;
         while(p1<QUEUE_LEN||p2<QUEUE_LEN){
             if(nextArr_t<nextLeave_t){
                 auto iter=m.find(p2-p1);
@@ -77,7 +77,7 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
                 if(p2<QUEUE_LEN)
                     nextArr_t=prod[i]._queue[p2]->comeTime;
                 else
-                    nextArr_t=__DBL_MAX__;
+                    nextArr_t=INT32_MAX;
             }else{
                 auto iter=m.find(p2-p1);
                 if(iter!=m.end()){
@@ -90,16 +90,16 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
                 if(p1<QUEUE_LEN)
                     nextLeave_t=prod[i]._queue[p1]->leaveTime;
                 else
-                    nextLeave_t=__DBL_MAX__;
+                    nextLeave_t=INT32_MAX;
             }
         }
         queueLen_output(m,filename,totalTime[i]);
-        double t=0.0;
+        long t=0;
         // for(int j=0;j<queueLen[i].size();j++)
         //     t+=queueLen[i][j]*j;
         for(auto iter=m.begin();iter!=m.end();iter++){
             t+=iter->first*iter->second;
         }
-        printf("站%d平均长度: %.5f\n",i+1,t/totalTime[i]);
+        printf("站%d平均长度: %.5f\n",i+1,(double)t/totalTime[i]);
     }
 }

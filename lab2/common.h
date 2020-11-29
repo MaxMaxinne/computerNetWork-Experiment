@@ -12,19 +12,19 @@ using namespace std;
 
 #define PROD_NUM 5
 #define QUEUE_LEN 1000000
-#define random() (double)rand()/RAND_MAX
-#define PACK_HEAD 2+2+6+6+2+4
+#define random(n) rand()%n
+#define SLOT 1
 
 #ifndef COMMON
 #define COMMON
 
 struct pack{
     int index;
-    double comeTime;
-    double leaveTime;
-    double weight;//包服务所需时间（const)
-    double waitingTime;
-    pack(int _index,double _weight,double _comeTime):index(_index),weight(_weight),comeTime(_comeTime){}
+    int comeTime;
+    int leaveTime;
+    int weight;//包服务所需时间（const)
+    int waitingTime;
+    pack(int _index,int _weight,int _comeTime):index(_index),weight(_weight),comeTime(_comeTime){}
 };
 
 struct producer{
@@ -36,13 +36,14 @@ struct producer{
     //int length;
     producer(){};
     producer(int _index,double _lamda,double _mu):Mu(_mu),index(_index),lamda(_lamda),front_ptr(0){
-        double currentTime=0;
+        int currentTime=0;
         for(int i=0;i<QUEUE_LEN;i++){
             if((i+1)%(QUEUE_LEN/10)==0)
                 cout<<"队列"<<index+1<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;
-            //TODO 修改乘为除
-            pack* p=new pack(i,-log(random())*Mu,currentTime);
-            currentTime+=-log(random())/lamda;//泊松过程
+            //修改除为乘
+            pack* p=new pack(i,(int)ceil(-log((double)rand()/(RAND_MAX))*Mu),currentTime);
+            currentTime+=(int)ceil(-log((double)rand()/(RAND_MAX))*lamda);//泊松过程
+            //cout<<currentTime<<endl;
             _queue.push_back(p);
         }
     }
@@ -51,8 +52,8 @@ struct producer{
     }
 };
 
-void res_output(vector<double>&,char*);
-void res_output_mm3(vector<double>*);
-void queueLen_output(map<int,double>,char*,double);
-void queueLen_output_mm3(producer*,double*);
+void res_output(vector<int>&,char*);
+void res_output_mm3(vector<int>*);
+void queueLen_output(map<int,int>,char*,int);
+void queueLen_output_mm3(producer*,int*);
 #endif
