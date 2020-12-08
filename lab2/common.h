@@ -11,7 +11,7 @@
 using namespace std;
 
 #define PROD_NUM 5
-#define QUEUE_LEN 1000000
+#define QUEUE_LEN 10000000
 #define random(n) rand()%n
 #define SLOT 1
 
@@ -42,7 +42,7 @@ struct producer{
                 cout<<"队列"<<index+1<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;
             //修改除为乘
             pack* p=new pack(i,(int)ceil(-log((double)rand()/(RAND_MAX))*Mu),currentTime);
-            currentTime+=(int)ceil(-log((double)rand()/(RAND_MAX))*lamda);//泊松过程
+            // currentTime+=(int)ceil(-log((double)rand()/(RAND_MAX))*lamda);//泊松过程
             //cout<<currentTime<<endl;
             _queue.push_back(p);
         }

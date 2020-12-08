@@ -8,5 +8,7 @@ int main(int argc,char** argv){
     for(int i=0;i<PROD_NUM;i++)
         p[i]=producer(i,lamda[i],Mu[i]);
     servemm3(p);
+    // producer p(0,11,10);
+    // servemm1(&p);
     return 0;
 }

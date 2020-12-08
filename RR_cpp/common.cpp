@@ -22,7 +22,7 @@ void res_output(vector<double>& res,char* filename){
     sort(res.begin(),res.end());
     int len=res.size();
     int count=0;//区间计数
-    double range=res[len-1]/100,min=0,max=range;//区间范围
+    double range=res[len-1]/1000,min=0,max=range;//区间范围
     cout<<"区间范围 "<<range<<endl;
     ofstream out(filename);
     if(!out.is_open()){
@@ -47,7 +47,7 @@ void res_output(vector<double>& res,char* filename){
 void res_output(vector<double>& res,char* filename){
     sort(res.begin(),res.end());
     int len=res.size();
-    int count=0,pnum=100;//区间计数
+    int count=0,pnum=1000000;//区间计数
     double range=res[len-1]/pnum,min=0,max=range;//区间范围
     map<double,double,greater<double>> m;
     cout<<"区间范围 "<<range<<endl;
@@ -56,6 +56,10 @@ void res_output(vector<double>& res,char* filename){
         cout<<"文件打开失败"<<endl;
         return;
     }
+    double t=0.0;
+    for(int j=0;j<res.size();j++)
+        t+=res[j];
+    printf("队列平均等待时间: %.5f\n",t/QUEUE_LEN);
 
     for(int j=0;j<len;j++){
         if(res[j]>=min&&res[j]<=max){
@@ -110,7 +114,7 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
         map<int,double,greater<int>> m;
         int p1=0,p2=0;//p1指向下一个离开包，p2指向下一个到达包
         double nextLeave_t=prod[i]._queue[0]->leaveTime,nextArr_t=prod[i]._queue[0]->comeTime,cur_t=0;
-        while(p1<QUEUE_LEN||p2<QUEUE_LEN){
+        while(p1<prod[i].front_ptr||p2<prod[i].front_ptr){
             if(nextArr_t<nextLeave_t){
                 auto iter=m.find(p2-p1);
                 if(iter!=m.end()){
@@ -120,7 +124,7 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
                 }
                 cur_t=nextArr_t;
                 p2++;
-                if(p2<QUEUE_LEN)
+                if(p2<prod[i].front_ptr)
                     nextArr_t=prod[i]._queue[p2]->comeTime;
                 else
                     nextArr_t=__DBL_MAX__;
@@ -133,7 +137,7 @@ void queueLen_output_mm3(producer* prod,double* totalTime){
                 }
                 cur_t=nextLeave_t;
                 p1++;
-                if(p1<QUEUE_LEN)
+                if(p1<prod[i].front_ptr)
                     nextLeave_t=prod[i]._queue[p1]->leaveTime;
                 else
                     nextLeave_t=__DBL_MAX__;

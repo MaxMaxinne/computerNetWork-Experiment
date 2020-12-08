@@ -1,14 +1,20 @@
 clc;
 close all;
 m1=load("./res_output/res_mm1.dat");
-subplot(1,2,1)
+f1=figure(1)
+%subplot(1,2,1)
 x1=m1(:,1);
 y1=m1(:,2);
 semilogy(x1,y1)
-title('waitingTime')
-subplot(1,2,2)
+xlabel('等待时间')
+title('等待时间分布')
+saveas(f1,['./','waitingTime','.png']);
+%subplot(1,2,2)
+f2=figure(2)
 m2=load("./res_output/len_mm1.dat");
 x2=m2(:,1);
 y2=m2(:,2);
 semilogy(x2,y2)
-title('queueLength')
+xlabel('队列长度')
+title('队列长度分布')
+saveas(f2,['./','queLen','.png']);

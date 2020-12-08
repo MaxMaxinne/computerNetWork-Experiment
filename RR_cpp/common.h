@@ -11,7 +11,7 @@
 using namespace std;
 
 #define PROD_NUM 3
-#define QUEUE_LEN 1000000
+#define QUEUE_LEN 10000000
 #define random() (double)rand()/RAND_MAX
 
 #ifndef COMMON
@@ -36,10 +36,12 @@ struct producer{
     producer(){};
     producer(int _index,double _lamda,double _mu):Mu(_mu),index(_index),lamda(_lamda),front_ptr(0){
         double currentTime=0;
+        srand(52);
         for(int i=0;i<QUEUE_LEN;i++){
             if((i+1)%(QUEUE_LEN/10)==0)
                 cout<<"队列"<<index+1<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;
             //TODO 修改乘为除
+            
             pack* p=new pack(i,-log(random())/Mu,currentTime);
             currentTime+=-log(random())/lamda;//泊松过程
             _queue.push_back(p);
@@ -56,10 +58,11 @@ struct producer{
 };
 
 void servemm3(producer*);
+void servemm1(producer*);
 // void serve(producer*);
 //void servemm1(producer*);
 void res_output(vector<double>&,char*);
 void res_output_mm3(vector<double>*);
-void queueLen_output(map<int,double>,char*,double);
+void queueLen_output(map<int,double,greater<int>>,char*,double);
 void queueLen_output_mm3(producer*,double*);
 #endif

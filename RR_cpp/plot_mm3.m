@@ -6,7 +6,7 @@ res3=load("res_output/res3.dat");
 len1=load("res_output/len1.dat");
 len2=load("res_output/len2.dat");
 len3=load("res_output/len3.dat");
-subplot(1,2,1)
+f1=figure(1)
 x1=res1(:,1);
 y1=res1(:,2);
 x2=res2(:,1);
@@ -14,10 +14,13 @@ y2=res2(:,2);
 x3=res3(:,1);
 y3=res3(:,2);
 semilogy(x1,y1,"r",x2,y2,"g",x3,y3,"b");
-title("waitingTime");
-legend("q1","q2","q3");
+%plot(x1,y1,"r",x2,y2,"g",x3,y3,"b");
+title("等待时间分布");
+xlabel("等待时间")
+legend("队列1","队列2","队列3");
+saveas(f1,"res_mm3","png")  
 
-subplot(1,2,2)
+f2=figure(2)
 x1=len1(:,1);
 y1=len1(:,2);
 x2=len2(:,1);
@@ -25,5 +28,7 @@ y2=len2(:,2);
 x3=len3(:,1);
 y3=len3(:,2);
 semilogy(x1,y1,"r",x2,y2,"g",x3,y3,"b")
-title("queueLength");
-legend("q1","q2","q3");
+title("队列长度分布");
+xlabel("队列长度")
+legend("队列1","队列2","队列3");
+saveas(f2,"len_mm3","png")

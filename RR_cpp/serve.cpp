@@ -1,18 +1,19 @@
 #include "common.h"
 
-#define TIMEPIECE 0.4
+#define TIMEPIECE 0.1
 #define OLD1
 
 double currentTime=0,workingTime=0;
 double remainTime[3]={TIMEPIECE,TIMEPIECE,TIMEPIECE};
 double finishTime[3]={0,0,0};
+double throughoutput[PROD_NUM]={0,0,0};
 vector<double> res[PROD_NUM];
 #ifdef OLD1
 //处理一个时间片
 void serveTimePiece(producer* prod){
     int queue_index=prod->index;
-    if(remainTime[queue_index]<TIMEPIECE)
-        remainTime[queue_index]=TIMEPIECE;
+    // if(remainTime[queue_index]<TIMEPIECE)
+        remainTime[queue_index]+=TIMEPIECE;
     while(!prod->empty()&&remainTime[queue_index]>0){
         pack* p=prod->_queue[prod->front_ptr];
         //包未到达
@@ -20,7 +21,7 @@ void serveTimePiece(producer* prod){
             break;
         //剩余时间不足，赤字
         if(p->weight>remainTime[queue_index]){
-            remainTime[queue_index]+=TIMEPIECE;
+            // remainTime[queue_index]+=TIMEPIECE;
             break;
         }
 
@@ -28,6 +29,7 @@ void serveTimePiece(producer* prod){
         currentTime+=p->weight;
         p->leaveTime=currentTime;
         remainTime[queue_index]-=p->weight;
+        throughoutput[queue_index]+=p->weight;
         workingTime+=p->weight;
         
         //输出结果
@@ -48,19 +50,19 @@ void servemm3(producer* prod){
     cout<<"Start simulation.Using RR.\ntimePiece: "<<TIMEPIECE<<endl;
     int pointer=0;
     bool isExecuted=false;
-    while(!prod[0].empty()||!prod[1].empty()||!prod[2].empty()){
+    while((prod[0].front_ptr+prod[1].front_ptr+prod[2].front_ptr)<=QUEUE_LEN){
         serveTimePiece(prod+pointer);
-        if(!isExecuted&&(prod[0].front_ptr>QUEUE_LEN*0.5)){
-            isExecuted=true;
-            for(int i=0;i<PROD_NUM;i++){
-                cout<<"队列"<<i+1<<"吞吐量: "<<prod[i].front_ptr<<endl;
-            }
-        }
+        // if(!isExecuted&&(prod[0].front_ptr>QUEUE_LEN*0.5)){
+        //     isExecuted=true;
+        //     for(int i=0;i<PROD_NUM;i++){
+        //         cout<<"队列"<<i+1<<"吞吐量: "<<throughoutput[i]<<endl;
+        //     }
+        // }
         pointer=(pointer+1)%3;
         double min_t=__DBL_MAX__;
         bool flag=false;
         //使currentTime等于totalTime
-        if(prod[0].empty()&&prod[1].empty()&&prod[2].empty())
+        if(prod[0].empty()||prod[1].empty()||prod[2].empty())
             break;
         for(int i=0;i<PROD_NUM;i++){
             double local_t=(prod[i].empty())?__DBL_MAX__:prod[i]._queue[prod[i].front_ptr]->comeTime;
@@ -74,8 +76,15 @@ void servemm3(producer* prod){
         if(!flag)
             currentTime=min_t;
     }
+    for(int i=0;i<PROD_NUM;i++){
+        cout<<"队列"<<i+1<<"吞吐量: "<<throughoutput[i]<<endl;
+        cout<<remainTime[i]<<endl;
+        finishTime[i]=currentTime;
+    }
+    // cout<<((prod[0].front_ptr+prod[1].front_ptr+prod[2].front_ptr)<=10000000)<<endl;
     printf("WoringTime: %.2f\nTotalTime: %.2f\nUtilization: %.2f%%\n",workingTime,currentTime,workingTime/currentTime*100);
     res_output_mm3(res);
+    
     queueLen_output_mm3(prod,finishTime);
 }
 #endif
@@ -148,3 +157,63 @@ void servemm3(producer* prod){
 //     printf("Utilization: %.2f%%\n",workingTime/currentTime*100);
 //     // cout<<maxLen<<endl;
 // }
+void servemm1(producer* p){
+    
+    vector<double> res_mm1;
+    printf("234");
+    while(!p->empty()){
+        pack* head=p->_queue[p->front_ptr];
+        if(currentTime<head->comeTime){
+            currentTime=head->comeTime;
+        }
+        head->leaveTime=currentTime;
+        head->waitingTime=currentTime-head->comeTime;
+        currentTime+=head->weight;
+        workingTime+=head->weight;
+        res_mm1.push_back(head->waitingTime);
+        p->front_ptr++;
+    }
+    printf("占用率:%.5f%%\n",workingTime/currentTime);
+    res_output(res_mm1,"./res_output/res_mm1.dat");
+
+    map<int,double,greater<int>> m;
+    int p1=0,p2=0;
+    double nextLeave_t=p->_queue[0]->leaveTime,nextArr_t=p->_queue[0]->comeTime,cur_t=0;
+    while(p1<QUEUE_LEN||p2<QUEUE_LEN){
+        if(nextArr_t<nextLeave_t){
+            auto iter=m.find(p2-p1);
+            if(iter!=m.end()){
+                iter->second+=nextArr_t-cur_t;
+            }else{
+                m[p2-p1]=nextArr_t-cur_t;
+            }
+            cur_t=nextArr_t;
+            p2++;
+            if(p2<QUEUE_LEN)
+                nextArr_t=p->_queue[p2]->comeTime;
+            else
+                nextArr_t=__DBL_MAX__;
+        }else{
+            auto iter=m.find(p2-p1);
+            if(iter!=m.end()){
+                iter->second+=nextLeave_t-cur_t;
+            }else{
+                m[p2-p1]=nextLeave_t-cur_t;
+            }
+            cur_t=nextLeave_t;
+            p1++;
+            if(p1<QUEUE_LEN)
+                nextLeave_t=p->_queue[p1]->leaveTime;
+            else
+                nextLeave_t=__DBL_MAX__;
+        }
+    }
+    queueLen_output(m,"./res_output/len_mm1.dat",currentTime);
+    double t=0.0;
+    // for(int j=0;j<queueLen[i].size();j++)
+    //     t+=queueLen[i][j]*j;
+    for(auto iter=m.begin();iter!=m.end();iter++){
+        t+=iter->first*iter->second;
+    }
+    printf("队列平均长度: %.5f\n",t/currentTime);
+}

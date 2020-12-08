@@ -13,9 +13,9 @@ $(shell if [ ! -e $(obj_dir) ];then mkdir -p $(obj_dir); fi)
 $(shell if [ ! -e $(res_dir) ];then mkdir -p $(res_dir); fi)
 
 ./obj/%.o:%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) -c $< -o $@ -g
 $(TARGET):$(ALL_OBJ_POS)
-	$(CXX) -o $(TARGET) $(ALL_OBJ_POS)
+	$(CXX) -o $(TARGET) $(ALL_OBJ_POS) -g
 
 .PHONY:clean
 clean:
