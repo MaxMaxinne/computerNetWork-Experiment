@@ -1,323 +1,0 @@
-[1mdiff --git a/.gitignore b/.gitignore[m
-[1mindex ecbba0c..67b6f18 100644[m
-[1m--- a/.gitignore[m
-[1m+++ b/.gitignore[m
-[36m@@ -5,5 +5,5 @@[m [mRR_cpp/*[m
- !RR_cpp/*.h[m
- !RR_cpp/*.cpp[m
- !RR_cpp/Makefile[m
-[31m-!RR_cpp/*.py[m
-[32m+[m[32m!RR_cpp/*.m[m[41m[m
- !RR_cpp/*.sh[m
-\ No newline at end of file[m
-[1mdiff --git a/README.md b/README.md[m
-[1mindex cd050b6..c987598 100644[m
-[1m--- a/README.md[m
-[1m+++ b/README.md[m
-[36m@@ -1,5 +1,5 @@[m
-[31m-# computerNetWork-Experiment[m
-[31m-计算机网络实验2020[m
-[31m-## RR_cpp tips[m
-[31m-* 运行三队列 bash run.sh 3 运行单队列 bash run.sh 1[m
-[31m-* lamda mu等参数写在 run.sh内[m
-[32m+[m[32m# computerNetWork-Experiment[m[41m[m
-[32m+[m[32m计算机网络实验2020[m[41m[m
-[32m+[m[32m## RR_cpp tips[m[41m[m
-[32m+[m[32m* 运行三队列 bash run.sh 3 运行单队列 bash run.sh 1[m[41m[m
-[32m+[m[32m* lamda mu等参数写在 run.sh内[m[41m[m
-[1mdiff --git a/RR_java/NetExperiment.iml b/RR_java/NetExperiment.iml[m
-[1mindex d5c0743..bcd2974 100644[m
-[1m--- a/RR_java/NetExperiment.iml[m
-[1m+++ b/RR_java/NetExperiment.iml[m
-[36m@@ -1,12 +1,12 @@[m
-[31m-<?xml version="1.0" encoding="UTF-8"?>[m
-[31m-<module type="JAVA_MODULE" version="4">[m
-[31m-  <component name="NewModuleRootManager" inherit-compiler-output="true">[m
-[31m-    <exclude-output />[m
-[31m-    <content url="file://$MODULE_DIR$">[m
-[31m-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />[m
-[31m-    </content>[m
-[31m-    <orderEntry type="inheritedJdk" />[m
-[31m-    <orderEntry type="sourceFolder" forTests="false" />[m
-[31m-  </component>[m
-[31m-</module>[m
-[31m-[m
-[32m+[m[32m<?xml version="1.0" encoding="UTF-8"?>[m[41m[m
-[32m+[m[32m<module type="JAVA_MODULE" version="4">[m[41m[m
-[32m+[m[32m  <component name="NewModuleRootManager" inherit-compiler-output="true">[m[41m[m
-[32m+[m[32m    <exclude-output />[m[41m[m
-[32m+[m[32m    <content url="file://$MODULE_DIR$">[m[41m[m
-[32m+[m[32m      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />[m[41m[m
-[32m+[m[32m    </content>[m[41m[m
-[32m+[m[32m    <orderEntry type="inheritedJdk" />[m[41m[m
-[32m+[m[32m    <orderEntry type="sourceFolder" forTests="false" />[m[41m[m
-[32m+[m[32m  </component>[m[41m[m
-[32m+[m[32m</module>[m[41m[m
-[32m+[m[41m[m
-[1mdiff --git a/RR_java/src/Cons.java b/RR_java/src/Cons.java[m
-[1mindex 8800e65..6fac9ee 100644[m
-[1m--- a/RR_java/src/Cons.java[m
-[1m+++ b/RR_java/src/Cons.java[m
-[36m@@ -1,175 +1,175 @@[m
-[31m-import java.io.File;[m
-[31m-import java.io.FileOutputStream;[m
-[31m-import java.io.FileWriter;[m
-[31m-import java.util.Collections;[m
-[31m-import java.io.IOException;[m
-[31m-import java.text.DecimalFormat;[m
-[31m-import java.util.ArrayList;[m
-[31m-[m
-[31m-public class Cons {[m
-[31m-    public double currentTime=0;[m
-[31m-    public double timePiece;[m
-[31m-    public ArrayList<Double> result=new ArrayList<>();[m
-[31m-//    public ArrayList<Double> display=new ArrayList<>();[m
-[31m-    DecimalFormat df = new DecimalFormat("0.0000");[m
-[31m-[m
-[31m-[m
-[31m-    public String str = "E://output3.txt";[m
-[31m-    public String str_result="E://result1.txt";[m
-[31m-[m
-[31m-    public static void write(String fileName, String content) {[m
-[31m-        FileWriter writer = null;[m
-[31m-        try {[m
-[31m-            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件[m
-[31m-            writer = new FileWriter(fileName, true);[m
-[31m-            writer.write(content);[m
-[31m-        } catch (IOException e) {[m
-[31m-            e.printStackTrace();[m
-[31m-        } finally {[m
-[31m-            try {[m
-[31m-                if(writer != null){[m
-[31m-                    writer.close();[m
-[31m-                }[m
-[31m-            } catch (IOException e) {[m
-[31m-                e.printStackTrace();[m
-[31m-            }[m
-[31m-        }[m
-[31m-    }[m
-[31m-[m
-[31m-[m
-[31m-    public Cons(double timePiece) {[m
-[31m-        this.timePiece = timePiece;[m
-[31m-    }[m
-[31m-[m
-[31m-    public static void main(String args[]) {[m
-[31m-        Cons cons = new Cons(10);[m
-[31m-    }[m
-[31m-[m
-[31m-    public int  CalMeanQueueLength(Prod producer) {[m
-[31m-        //计算平均队列长度[m
-[31m-        int index = 0;[m
-[31m-        while(!producer.queue.isEmpty()&&index<producer.queue.size()&&producer.queue.get(index).comeTime<=currentTime) {[m
-[31m-            index++;[m
-[31m-        }[m
-[31m-        producer.lengthDis.add(index+1);[m
-[31m-        return index+1;[m
-[31m-    }[m
-[31m-[m
-[31m-[m
-[31m-[m
-[31m-    public void ConsTimePiece(Prod producer) throws IOException {[m
-[31m-        //服务一个时间片的方法[m
-[31m-        int QueueLength = 0;[m
-[31m-        double time=timePiece;[m
-[31m-        while((!producer.queue.isEmpty())&&0<time) {[m
-[31m-            if(producer.queue.get(0).comeTime<=currentTime) {[m
-[31m-//				hahaha = 0;[m
-[31m-                pack temp = producer.queue.get(0);[m
-[31m-                //每次给一个队列充足的一个时间片时间，当最后一个商品大于剩余时间时，阻塞该商品，[m
-[31m-                //同时将剩余时间加入到下一个轮转的时间片中。[m
-[31m-                if (temp.servTime>time){[m
-[31m-                    temp.servTime-=time;[m
-[31m-                    //System.out.println("队列"+producer.index+"   is too large,wait a timepiece");[m
-[31m-                    return;[m
-[31m-                }[m
-[31m-                temp.CalLeaf(currentTime);[m
-[31m-                currentTime += temp.weight;[m
-[31m-                time-=temp.servTime;[m
-[31m-                //输出包的信息[m
-[31m-//				 HSSFRow rows = sheet.createRow(row);[m
-[31m-//				 row ++;[m
-[31m-//				 System.out.println("line:"+ producer.index +"pack:"+temp.index);[m
-[31m-//				 rows.createCell((short) 0).setCellValue(producer.index);[m
-[31m-//				 rows.createCell((short) 1).setCellValue(temp.index);[m
-[31m-//				 [m
-[31m-//				 rows.createCell((short) 3).setCellValue(temp.waitTime);[m
-[31m-//				[m
-[31m-                //QueueLength = CalMeanQueueLength(producer);[m
-[31m-//                write(str,producer.index+"  "+temp.index+"  "+df.format(temp.waitTime)+"  "+QueueLength +"\r\n");[m
-[31m-                //write(str,producer.index+"  "+"  "+df.format(temp.waitTime)+"\r\n");[m
-[31m-                if(temp.index%10000==0)[m
-[31m-                System.out.println("队列"+producer.index+" 包: "+temp.index+"   " + "waittime: "+df.format(temp.waitTime)+"   serveTime: "+df.format(temp.weight)+"  "+QueueLength);[m
-[31m-                if (producer.index==1){[m
-[31m-                    result.add(temp.waitTime);[m
-[31m-                }[m
-[31m-                producer.queue.remove(0);[m
-[31m-                //System.out.println();[m
-[31m-            }else {[m
-[31m-                currentTime += 0.01;[m
-[31m-//				hahaha++;[m
-[31m-//				System.out.println("hahaha");[m
-[31m-                break;[m
-[31m-            }[m
-[31m-        }[m
-[31m-    }[m
-[31m-    public int hahaha;[m
-[31m-    public void Consume3(Prod producer1,Prod producer2, Prod producer3) throws IOException{[m
-[31m-        //三队列的服务方法[m
-[31m-        //此方法为带赤字的时间片调度算法,对三个生产者产生的包文件进行调度[m
-[31m-        //	调度算法为：对三个生产者队列进行轮询，当有符合要求的文件时(Prod.time.get(0)<=currentTime)[m
-[31m-        //	在不超过时间片长度的情况下可以一直对该生产者队列服务，但是一旦超过了时间片长度则轮询下个队列[m
-[31m-        //	并且允许且只允许一个包的服务时间超过时间片[m
-[31m-        //----------------------------------------------------------------[m
-[31m-        int n = 1;[m
-[31m-        while(!producer1.queue.isEmpty()||!producer2.queue.isEmpty()||!producer3.queue.isEmpty()) {[m
-[31m-            if(n==1)      ConsTimePiece(producer1);[m
-[31m-            else if(n==2) ConsTimePiece(producer2);[m
-[31m-            else		  ConsTimePiece(producer3);[m
-[31m-[m
-[31m-//			if(hahaha>=3) {[m
-[31m-//				if(!producer1.queue.isEmpty()&&!producer2.queue.isEmpty()&&!producer3.queue.isEmpty())[m
-[31m-//					currentTime = min3(producer1.queue.get(0).comeTime, producer2.queue.get(0).comeTime, producer3.queue.get(0).comeTime);[m
-[31m-//				if(!producer1.queue.isEmpty()&&!producer2.queue.isEmpty()&&producer3.queue.isEmpty())[m
-[31m-//					currentTime = min(producer1.queue.get(0).comeTime, producer2.queue.get(0).comeTime);[m
-[31m-//				if(!producer1.queue.isEmpty()&&producer2.queue.isEmpty()&&!producer3.queue.isEmpty())[m
-[31m-//					currentTime = min(producer1.queue.get(0).comeTime, producer3.queue.get(0).comeTime);[m
-[31m-//				if(producer1.queue.isEmpty()&&!producer2.queue.isEmpty()&&!producer3.queue.isEmpty())[m
-[31m-//					currentTime = min(producer2.queue.get(0).comeTime, producer3.queue.get(0).comeTime);[m
-[31m-//				if(!producer1.queue.isEmpty()&&producer2.queue.isEmpty()&&producer3.queue.isEmpty())[m
-[31m-//					currentTime = producer1.queue.get(0).comeTime;[m
-[31m-//				if(!producer2.queue.isEmpty()&&producer1.queue.isEmpty()&&producer3.queue.isEmpty())[m
-[31m-//					currentTime = producer2.queue.get(0).comeTime;[m
-[31m-//				if(!producer3.queue.isEmpty()&&producer1.queue.isEmpty()&&producer2.queue.isEmpty())[m
-[31m-//					currentTime = producer3.queue.get(0).comeTime;[m
-[31m-//			}[m
-[31m-[m
-[31m-//			else {[m
-[31m-//				改变n值[m
-[31m-            if(n==1) n=2;[m
-[31m-            else if(n==2) n=3;[m
-[31m-            else n=1;[m
-[31m-//			}[m
-[31m-        }[m
-[31m-[m
-[31m-    }[m
-[31m-    public double min(double a,double b) {[m
-[31m-        return (a<b)?a:b;[m
-[31m-    }[m
-[31m-    public double min3(double a,double b,double c) {[m
-[31m-        return (min(a,b)>c)?(min(a,b)):c;[m
-[31m-    }[m
-[31m-    public void deal_result(){[m
-[31m-        Collections.sort(result);[m
-[31m-        int len=result.size();[m
-[31m-        int count=0;[m
-[31m-        double d=result.get(len-1)/100;[m
-[31m-        double min=-0.0000,max=d;[m
-[31m-        double x=d/2;[m
-[31m-        for (int i=0;i<len;i++){[m
-[31m-            if (result.get(i)>=min&&result.get(i)<=max){[m
-[31m-                count++;[m
-[31m-            }[m
-[31m-            else {[m
-[31m-                write(str_result,x+"    "+((double) count)/len+'\n');[m
-[31m-                x+=d;[m
-[31m-                min+=d;[m
-[31m-                max+=d;[m
-[31m-                count=0;[m
-[31m-            }[m
-[31m-        }[m
-[31m-//        for (int i =0;i<result.size();i++){[m
-[31m-//            write(str_result,df.format(result.get(i))+'\n');[m
-[31m-//        }[m
-[31m-    }[m
-[31m-[m
-[32m+[m[32mimport java.io.File;[m[41m[m
-[32m+[m[32mimport java.io.FileOutputStream;[m[41m[m
-[32m+[m[32mimport java.io.FileWriter;[m[41m[m
-[32m+[m[32mimport java.util.Collections;[m[41m[m
-[32m+[m[32mimport java.io.IOException;[m[41m[m
-[32m+[m[32mimport java.text.DecimalFormat;[m[41m[m
-[32m+[m[32mimport java.util.ArrayList;[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32mpublic class Cons {[m[41m[m
-[32m+[m[32m    public double currentTime=0;[m[41m[m
-[32m+[m[32m    public double timePiece;[m[41m[m
-[32m+[m[32m    public ArrayList<Double> result=new ArrayList<>();[m[41m[m
-[32m+[m[32m//    public ArrayList<Double> display=new ArrayList<>();[m[41m[m
-[32m+[m[32m    DecimalFormat df = new DecimalFormat("0.0000");[m[41m[m
-[32m+[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32m    public String str = "E://output3.txt";[m[41m[m
-[32m+[m[32m    public String str_result="E://result1.txt";[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32m    public static void write(String fileName, String content) {[m[41m[m
-[32m+[m[32m        FileWriter writer = null;[m[41m[m
-[32m+[m[32m        try {[m[41m[m
-[32m+[m[32m            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件[m[41m[m
-[32m+[m[32m            writer = new FileWriter(fileName, true);[m[41m[m
-[32m+[m[32m            writer.write(content);[m[41m[m
-[32m+[m[32m        } catch (IOException e) {[m[41m[m
-[32m+[m[32m            e.printStackTrace();[m[41m[m
-[32m+[m[32m        } finally {[m[41m[m
-[32m+[m[32m            try {[m[41m[m
-[32m+[m[32m                if(writer != null){[m[41m[m
-[32m+[m[32m                    writer.close();[m[41m[m
-[32m+[m[32m                }[m[41m[m
-[32m+[m[32m            } catch (IOException e) {[m[41m[m
-[32m+[m[32m                e.printStackTrace();[m[41m[m
-[32m+[m[32m            }[m[41m[m
-[32m+[m[32m        }[m[41m[m
-[32m+[m[32m    }[m[41m[m
-[32m+[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32m    public Cons(double timePiece) {[m[41m[m
-[32m+[m[32m        this.timePiece = timePiece;[m[41m[m
-[32m+[m[32m    }[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32m    public static void main(String args[]) {[m[41m[m
-[32m+[m[32m        Cons cons = new Cons(10);[m[41m[m
-[32m+[m[32m    }[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32m    public int  CalMeanQueueLength(Prod producer) {[m[41m[m
-[32m+[m[32m        //计算平均队列长度[m[41m[m
-[32m+[m[32m        int index = 0;[m[41m[m
-[32m+[m[32m        while(!producer.queue.isEmpty()&&index<producer.queue.size()&&producer.queue.get(index).comeTime<=currentTime) {[m[41m[m
-[32m+[m[32m            index++;[m[41m[m
-[32m+[m[32m        }[m[41m[m
-[32m+[m[32m        producer.lengthDis.add(index+1);[m[41m[m
-[32m+[m[32m        return index+1;[m[41m[m
-[32m+[m[32m    }[m[41m[m
-[32m+[m[41m[m
-[32m+[m[41m[m
-[32m+[m[41m[m
-[32m+[m[32m    public void ConsTimePiece(Prod producer) throws IOException {[m[41m[m
-[32m+[m[32m        //服务一个时间片的方法[m[41m[m
-[32m+[m[32m        int QueueLength = 0;[m[41m[m
-[32m+[m[32m        double time=timePiece;[m[41m[m
-[32m+[m[32m        while((!producer.queue.isEmpty())&&0<time) {[m[41m[m
-[32m+[m[32m            if(producer.queue.get(0).comeTime<=currentTime) {[m[41m[m
-[32m+[m[32m//				hahaha = 0;[m[41m[m
-[32m+[m[32m                pack temp = producer.queue.get(0);[m[41m[m
-[32m+[m[32m                //每次给一个队列充足的一个时间片时间，当最后一个商品大于剩余时间时，阻塞该商品，[m[41m[m
-[32m+[m[32m                //同时将剩余时间加入到下一个轮转的时间片中。[m[41m[m
-[32m+[m[32m                if (temp.servTime>time){[m[41m[m
-[32m+[m[32m                    temp.servTime-=time;[m[41m[m
-[32m+[m[32m                    //System.out.println("队列"+producer.index+"   is too large,wait a timepiece");[m[41m[m
-[32m+[m[32m                    return;[m[41m[m
-[32m+[m[32m                }[m[41m[m
-[32m+[m[32m                temp.CalLeaf(currentTime);[m[41m[m
-[32m+[m[32m                currentTime += temp.weight;[m[41m[m
-[32m+[m[32m                time-=temp.servTime;[m[41m[m
-[32m+[m[32m                //输出包的信息[m[41m[m
-[32m+[m[32m//				 HSSFRow rows = sheet.createRow(row);[m[41m[m
-[32m+[m[32m//				 row ++;[m[41m[m
-[32m+[m[32m//				 System.out.println("line:"+ producer.index +"pack:"+temp.index);[m[41m[m
-[32m+[m[32m//				 rows.createCell((short) 0).setCellValue(producer.index);[m[41m[m
-[32m+[m[32m//				 rows.createCell((short) 1).setCellValue(temp.index);[m[41m[m
-[32m+[m[32m//[m[41m				 [m
-[32m+[m[32m//				 rows.createCell((short) 3).setCellValue(temp.waitTime);[m[41m[m
-[32m+[m[32m//[m[41m				[m
-[32m+[m[32m                //QueueLength = CalMeanQueueLength(producer);[m[41m[m
-

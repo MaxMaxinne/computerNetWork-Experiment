@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define TIMEPIECE 0.1
+#define TIMEPIECE 0.4
 #define OLD1
 
 double currentTime=0,workingTime=0;
@@ -60,6 +60,7 @@ void servemm3(producer* prod){
         // }
         pointer=(pointer+1)%3;
         double min_t=__DBL_MAX__;
+        int min_p=0;
         bool flag=false;
         //使currentTime等于totalTime
         if(prod[0].empty()||prod[1].empty()||prod[2].empty())
@@ -70,11 +71,16 @@ void servemm3(producer* prod){
                 flag=true;
                 break;
             }
-            if(local_t<min_t)
+            if(local_t<min_t){
                 min_t=local_t;
+                // min_p=i;
+            }
         }
-        if(!flag)
+        if(!flag){
             currentTime=min_t;
+            // pointer=min_p;
+        }
+            
     }
     for(int i=0;i<PROD_NUM;i++){
         cout<<"队列"<<i+1<<"吞吐量: "<<throughoutput[i]<<endl;
