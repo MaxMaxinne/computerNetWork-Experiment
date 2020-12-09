@@ -1,1 +1,1 @@
-make clean&&make&&./sim 2 3 5 10 10 10
+make clean&&make&&./sim 2 3 4 5 5 5

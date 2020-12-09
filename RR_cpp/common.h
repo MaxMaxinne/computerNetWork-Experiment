@@ -36,7 +36,7 @@ struct producer{
     producer(){};
     producer(int _index,double _lamda,double _mu):Mu(_mu),index(_index),lamda(_lamda),front_ptr(0){
         double currentTime=0;
-        srand(52);
+        srand(4);
         for(int i=0;i<QUEUE_LEN;i++){
             if((i+1)%(QUEUE_LEN/10)==0)
                 cout<<"队列"<<index+1<<": "<<"包"<<i+1<<" currentTime: "<<setprecision(5)<<fixed<<currentTime<<" lamda: "<<lamda<<" Mu: "<<Mu<<endl;

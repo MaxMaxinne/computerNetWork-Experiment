@@ -1,19 +1,20 @@
 #include "common.h"
 
-#define TIMEPIECE 0.4
+#define TIMEPIECE 4
 #define OLD1
 
+double timeP[PROD_NUM]={0.1,0.2,0.4};//优先级
 double currentTime=0,workingTime=0;
-double remainTime[3]={TIMEPIECE,TIMEPIECE,TIMEPIECE};
-double finishTime[3]={0,0,0};
+double remainTime[PROD_NUM]={TIMEPIECE,TIMEPIECE,TIMEPIECE};
+double finishTime[PROD_NUM]={0,0,0};
 double throughoutput[PROD_NUM]={0,0,0};
 vector<double> res[PROD_NUM];
 #ifdef OLD1
 //处理一个时间片
 void serveTimePiece(producer* prod){
     int queue_index=prod->index;
-    // if(remainTime[queue_index]<TIMEPIECE)
-        remainTime[queue_index]+=TIMEPIECE;
+    if(remainTime[queue_index]<TIMEPIECE)
+        remainTime[queue_index]=TIMEPIECE;
     while(!prod->empty()&&remainTime[queue_index]>0){
         pack* p=prod->_queue[prod->front_ptr];
         //包未到达
@@ -21,7 +22,7 @@ void serveTimePiece(producer* prod){
             break;
         //剩余时间不足，赤字
         if(p->weight>remainTime[queue_index]){
-            // remainTime[queue_index]+=TIMEPIECE;
+            remainTime[queue_index]+=TIMEPIECE;
             break;
         }
 
